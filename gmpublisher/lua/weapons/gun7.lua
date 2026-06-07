@@ -57,6 +57,45 @@ function SWEP:Initialize()
     self:SetHoldType("shotgun")
 end
 
+-- Helper: custom blast damage that excludes the attacker to avoid self-damage
+local function BlastDamageExcludeAttacker(pos, radius, damageAmount, attacker, inflictor)
+    local entsInSphere = ents.FindInSphere(pos, radius)
+    for _, ent in ipairs(entsInSphere) do
+        if not IsValid(ent) then continue end
+        if ent == attacker then continue end
+        -- Allow damaging world and NPCs and players except attacker
+        local dmg = DamageInfo()
+        dmg:SetDamage(damageAmount)
+        dmg:SetAttacker(attacker or inflictor)
+        dmg:SetInflictor(inflictor or attacker)
+        dmg:SetDamageType(DMG_BLAST)
+
+        -- Apply directional force a little
+        local dir = (ent:GetPos() - pos)
+        if dir == vector_origin then dir = VectorRand() end
+        dir = dir:GetNormalized()
+
+        -- For players, apply velocity as knockback
+        if ent:IsPlayer() then
+            -- Prevent instant gib from very high velocities; scale down
+            ent:SetVelocity(dir * (math.Clamp(damageAmount, 50, 500) * 6))
+        end
+
+        -- For physics objects, apply force
+        local phys = ent:GetPhysicsObject()
+        if IsValid(phys) then
+            phys:ApplyForceCenter(dir * (damageAmount * 150))
+        end
+
+        -- Finally, inflict damage
+        if ent.TakeDamageInfo then
+            ent:TakeDamageInfo(dmg)
+        else
+            ent:TakeDamage(damageAmount, attacker or inflictor, inflictor or attacker)
+        end
+    end
+end
+
 function SWEP:PrimaryAttack()
     if not self:CanPrimaryAttack() then return end
 
@@ -108,15 +147,24 @@ function SWEP:PrimaryAttack()
                 filter = owner
             })
 
-            -- Взрыв в конце траектории выстрела дробины с увеличенным радиусом
-            util.BlastDamage(self, owner, tr.HitPos, self.ExplosiveRadius or 250, self.ExplosiveDamage or 82)
+            local hitPos = (tr.Hit and tr.HitPos) and tr.HitPos or (shoot_origin + dir * 4096)
+            local hitNormal = (tr.Hit and tr.HitNormal) and tr.HitNormal or dir
 
-            -- Визуальный эффект — исправлено: используем правильное имя эффекта и отправляем его клиентам
+            -- Custom Blast: avoid damaging the shooter (fix self-kill when moving)
+            local radius = self.ExplosiveRadius or 250
+            local dmg = self.ExplosiveDamage or 82
+            BlastDamageExcludeAttacker(hitPos, radius, dmg, owner, self)
+
+            -- VFX: use robust effect data with origin/start/normal
             local fx = EffectData()
-            fx:SetOrigin(tr.HitPos)
+            fx:SetOrigin(hitPos)
+            fx:SetStart(shoot_origin)
+            fx:SetNormal(hitNormal)
+            fx:SetScale(1)
+            fx:SetMagnitude(1)
             util.Effect("Explosion", fx, true, true)
 
-            -- Нарисуем красный трассер
+            -- Нарисуем красный трассер (clientside may handle better with particles but keep simple)
             local trailEnt = ents.Create("info_target")
             if IsValid(trailEnt) then
                 trailEnt:SetPos(shoot_origin)
