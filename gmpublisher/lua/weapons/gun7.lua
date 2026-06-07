@@ -111,10 +111,10 @@ function SWEP:PrimaryAttack()
             -- Взрыв в конце траектории выстрела дробины с увеличенным радиусом
             util.BlastDamage(self, owner, tr.HitPos, self.ExplosiveRadius or 250, self.ExplosiveDamage or 82)
 
-            -- Визуальный эффект
+            -- Визуальный эффект — исправлено: используем правильное имя эффекта и отправляем его клиентам
             local fx = EffectData()
             fx:SetOrigin(tr.HitPos)
-            util.Effect("explosion", fx)
+            util.Effect("Explosion", fx, true, true)
 
             -- Нарисуем красный трассер
             local trailEnt = ents.Create("info_target")
