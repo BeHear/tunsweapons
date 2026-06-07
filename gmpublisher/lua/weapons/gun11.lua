@@ -55,7 +55,7 @@ function SWEP:PrimaryAttack()
     if not IsFirstTimePredicted() then return end
 
     self.Owner:SetAnimation(PLAYER_ATTACK1)
-    self.Weapon:SendWeaponAnim(KNIFE_ANIMS.Slash)
+    self:SendWeaponAnim(KNIFE_ANIMS.Slash)
 
     if SERVER then
         timer.Simple(0.05, function() -- задержка для совпадения с анимацией
@@ -73,7 +73,7 @@ function SWEP:SecondaryAttack()
     if not IsFirstTimePredicted() then return end
 
     self.Owner:SetAnimation(PLAYER_ATTACK1)
-    self.Weapon:SendWeaponAnim(KNIFE_ANIMS.Stab)
+    self:SendWeaponAnim(KNIFE_ANIMS.Stab)
 
     if SERVER then
         timer.Simple(0.04, function()
@@ -150,7 +150,7 @@ function SWEP:KnifeDealDamage(dmg, force, isStab)
 end
 
 function SWEP:Deploy()
-    self.Weapon:SendWeaponAnim(KNIFE_ANIMS.Draw)
+    self:SendWeaponAnim(KNIFE_ANIMS.Draw)
     if SERVER and IsValid(self.Owner) and self.Owner:IsPlayer() then
         if not self.Owner._OldKnifeWalkSpeed then
             self.Owner._OldKnifeWalkSpeed = self.Owner:GetWalkSpeed()

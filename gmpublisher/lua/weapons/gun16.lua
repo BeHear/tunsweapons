@@ -1,4 +1,4 @@
-// Мега Stunstick для Garry's Mod, на базе gun1.lua с гипер-уроном и особыми эффектами
+-- Мега Stunstick для Garry's Mod, на базе gun1.lua с гипер-уроном и особыми эффектами
 
 SWEP.PrintName = "Mega Stunstick"
 SWEP.Author = "GPT"
@@ -117,7 +117,7 @@ function SWEP:PrimaryAttack()
                 dmginfo:SetInflictor(self)
                 dmginfo:SetDamageForce(owner:GetAimVector() * self.Primary.Force * 900)
                 dmginfo:SetDamagePosition(tr.HitPos)
-                dmginfo:SetDamageType(bit.bor(DMG_CLUB, DMG_SHOCK))
+                dmginfo:SetDamageType(DMG_CLUB + DMG_SHOCK)
                 
                 -- до нанесения урона сохраняем старое здоровье
                 local wasAlive = true

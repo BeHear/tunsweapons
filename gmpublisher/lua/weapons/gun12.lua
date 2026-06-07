@@ -65,7 +65,7 @@ function SWEP:PrimaryAttack()
         -- Убивать всех, кого заденет стул
         ent:AddCallback("PhysicsCollide", function(chair, data)
             local hitEnt = data.HitEntity
-            if IsValid(hitEnt) and hitEnt:IsPlayer() or hitEnt:IsNPC() then
+            if IsValid(hitEnt) and (hitEnt:IsPlayer() or hitEnt:IsNPC()) then
                 local dmg = DamageInfo()
                 dmg:SetAttacker(ply)
                 dmg:SetInflictor(self)

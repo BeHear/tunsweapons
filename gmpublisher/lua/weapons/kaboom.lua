@@ -39,14 +39,14 @@ function SWEP:PrimaryAttack()
     local ply = self:GetOwner()
     if not IsValid(ply) or not ply:IsPlayer() then return end
 
-    -- Проиграть звук 'kaboom.mp3' ГРОМКО!
+    -- Проиграть звук 'kaboom.wav' ГРОМКО!
     if SERVER then
-        -- Используем максимально громкий звук через EmitSound с gain параметром
-        -- На новых версиях Garry's Mod можно передать таблицу с gain
-        if istable(ply.EmitSound) or (type(ply.EmitSound) == "function" and debug.getinfo(ply.EmitSound).nparams > 3) then
+        local played = false
+        pcall(function()
             ply:EmitSound({sound = "kaboom.wav", volume = 1, level = 150, pitch = 100, gain = 2.5})
-        else
-            -- Фоллбек на обычный вызов с максимальным volume/level
+            played = true
+        end)
+        if not played then
             ply:EmitSound("kaboom.wav", 511, 100, 1, CHAN_AUTO)
         end
 

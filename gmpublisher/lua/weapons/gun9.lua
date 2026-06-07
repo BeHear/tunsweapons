@@ -14,7 +14,7 @@ SWEP.Primary.DefaultClip = 25
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "357"
 SWEP.Primary.Delay = 1.2
-SWEP.Primary.Damage = 1/0 -- гипер гипер максимум, реально бесконечный урон
+SWEP.Primary.Damage = math.huge -- бесконечный урон
 SWEP.Primary.Recoil = 0
 SWEP.Primary.NumShots = 8
 SWEP.Primary.Spread = 0 -- без разброса
@@ -82,7 +82,7 @@ function SWEP:PrimaryAttack()
         -- Проверяем убитую сущность
         if SERVER then
             local ent = tr.Entity
-            if IsValid(ent) and ent:IsPlayer() or ent:IsNPC() then
+                if IsValid(ent) and (ent:IsPlayer() or ent:IsNPC()) then
                 -- Подождём тик, чтобы убийство засчиталось
                 timer.Simple(0, function()
                     if IsValid(ent) and ent:Health() <= 0 then

@@ -57,8 +57,6 @@ function SWEP:PrimaryAttack()
         if IsValid(phys) then
             phys:SetVelocity(owner:GetAimVector() * 3400)
         end
-
-        rocket:SetSaveValue("m_flDamage", self.Primary.Damage)
     end
 
     self:EmitSound("Weapon_RPG.Single")

@@ -117,12 +117,90 @@ function SWEP:ShootBullet(damage, num_bullets, aimcone)
 end
 
 function SWEP:Reload()
-    self:DefaultReload(ACT_SHOTGUN_RELOAD_FINISH)
-    timer.Simple(self.Owner:GetViewModel():SequenceDuration(), function()
-        if IsValid(self) then
-            self.CurrentSpread = self.Primary.Spread -- сбросить разброс при перезарядке
+    if self.Reloading then return end
+    if self:Clip1() >= self.Primary.ClipSize then return end
+    if self:GetOwner():GetAmmoCount(self.Primary.Ammo) <= 0 then return end
+
+    self.Reloading = true
+
+    self:SetNextPrimaryFire(CurTime() + 0.5)
+    self:SetNextSecondaryFire(CurTime() + 0.5)
+
+    self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_START)
+    local vm = self:GetOwner():GetViewModel()
+    if IsValid(vm) then
+        vm:ResetSequence(ACT_SHOTGUN_RELOAD_START)
+    end
+
+    timer.Simple(vm:SequenceDuration(), function()
+        if not IsValid(self) or not IsValid(self:GetOwner()) or not self.Reloading then
+            self.Reloading = false
+            return
+        end
+
+        self:StartShellInsert()
+    end)
+end
+
+function SWEP:StartShellInsert()
+    if not IsValid(self) or not IsValid(self:GetOwner()) then
+        self.Reloading = false
+        return
+    end
+    if self:Clip1() >= self.Primary.ClipSize or self:GetOwner():GetAmmoCount(self.Primary.Ammo) <= 0 then
+        self:FinishReload()
+        return
+    end
+
+    self:SendWeaponAnim(ACT_VM_RELOAD)
+    local owner = self:GetOwner()
+    local vm = owner:GetViewModel()
+    if IsValid(vm) then
+        vm:ResetSequence(ACT_VM_RELOAD)
+    end
+
+    timer.Simple(vm:SequenceDuration(), function()
+        if not IsValid(self) or not IsValid(owner) or not self.Reloading then
+            self.Reloading = false
+            return
+        end
+
+        self:SetClip1(self:Clip1() + 1)
+        owner:RemoveAmmo(1, self.Primary.Ammo)
+        if self:Clip1() < self.Primary.ClipSize and owner:GetAmmoCount(self.Primary.Ammo) > 0 then
+            self:StartShellInsert()
+        else
+            self:FinishReload()
         end
     end)
+end
+
+function SWEP:FinishReload()
+    if not IsValid(self) or not IsValid(self:GetOwner()) then
+        self.Reloading = false
+        return
+    end
+    self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_FINISH)
+    local vm = self:GetOwner():GetViewModel()
+    if IsValid(vm) then
+        vm:ResetSequence(ACT_SHOTGUN_RELOAD_FINISH)
+    end
+
+    local finishTime = vm and vm:SequenceDuration() or 0.5
+
+    timer.Simple(finishTime, function()
+        if IsValid(self) then
+            self.Reloading = false
+        end
+    end)
+
+    self:SetNextPrimaryFire(CurTime() + finishTime)
+    self:SetNextSecondaryFire(CurTime() + finishTime)
+end
+
+function SWEP:CanPrimaryAttack()
+    if self.Reloading then return false end
+    return self:Clip1() > 0
 end
 
 function SWEP:SecondaryAttack()
