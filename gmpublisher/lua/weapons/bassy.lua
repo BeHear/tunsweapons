@@ -56,7 +56,27 @@ function SWEP:PrimaryAttack()
     self:EmitSound("weapons/physcannon/superphys_launch1.wav", 140, 40, 1, CHAN_AUTO)
 
     if SERVER then
-        util.BlastDamage(self, owner, pos, radius, self.BassDamage or 75)
+        -- Apply blast damage to entities in radius but explicitly exclude the owner to avoid self-damage
+        local damage = self.BassDamage or 75
+        local entsInSphere = ents.FindInSphere(pos, radius)
+        for _, ent in ipairs(entsInSphere) do
+            if not IsValid(ent) then continue end
+            if ent == owner then continue end
+
+            if ent:IsPlayer() or ent:IsNPC() or ent:IsNextBot() then
+                local dmginfo = DamageInfo()
+                dmginfo:SetDamage(damage)
+                dmginfo:SetAttacker(owner)
+                dmginfo:SetInflictor(self)
+                dmginfo:SetDamageType(DMG_BLAST)
+                ent:TakeDamageInfo(dmginfo)
+            else
+                -- Apply damage to props/other entities so they react to the blast
+                if ent.TakeDamage then
+                    ent:TakeDamage(damage, owner, self)
+                end
+            end
+        end
 
         if not IsValid(owner) then return end
         timer.Simple(0.05, function()
