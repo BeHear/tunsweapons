@@ -13,7 +13,7 @@ SWEP.Primary.DefaultClip = 1
 SWEP.Primary.Automatic = false
 SWEP.Primary.Ammo = "none"
 SWEP.Primary.Delay = 5
-SWEP.Primary.Damage = math.huge
+SWEP.Primary.Damage = 9999999 -- Максимальный урон
 SWEP.Primary.Recoil = 0
 SWEP.Primary.NumShots = 1
 SWEP.Primary.Spread = 0
@@ -79,7 +79,7 @@ function SWEP:PrimaryAttack()
 
     -- Уничтожить все пропы (prop_physics, prop_dynamic и др)
     for _, ent in ipairs(ents.GetAll()) do
-        if ent ~= owner and IsValid(ent) and (string.find(ent:GetClass(), "prop_") or ent:GetClass() == "gmod_sent_vehicle_fphysics_base") then
+        if ent ~= owner and IsValid(ent) and (string.sub(ent:GetClass(), 1, 5) == "prop_" or ent:GetClass() == "gmod_sent_vehicle_fphysics_base") then
             local phys = ent:GetPhysicsObject()
             if IsValid(phys) then
                 local effectdata = EffectData()

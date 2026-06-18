@@ -74,20 +74,19 @@ function SWEP:PrimaryAttack()
         local damage = self.BassDamage or 75
         local entsInSphere = ents.FindInSphere(pos, radius)
         for _, ent in ipairs(entsInSphere) do
-            if not IsValid(ent) then continue end
-            if IsBassyProtectedEntity(ent, owner) then continue end
-
-            if ent:IsPlayer() or ent:IsNPC() or (ent.IsNextBot and ent:IsNextBot()) then
-                local dmginfo = DamageInfo()
-                dmginfo:SetDamage(damage)
-                dmginfo:SetAttacker(owner)
-                dmginfo:SetInflictor(self)
-                dmginfo:SetDamageType(DMG_BLAST)
-                ent:TakeDamageInfo(dmginfo)
-            else
-                -- Apply damage to props/other entities so they react to the blast
-                if ent.TakeDamage then
-                    ent:TakeDamage(damage, owner, self)
+            if IsValid(ent) and not IsBassyProtectedEntity(ent, owner) then
+                if ent:IsPlayer() or ent:IsNPC() or (ent.IsNextBot and ent:IsNextBot()) then
+                    local dmginfo = DamageInfo()
+                    dmginfo:SetDamage(damage)
+                    dmginfo:SetAttacker(owner)
+                    dmginfo:SetInflictor(self)
+                    dmginfo:SetDamageType(DMG_BLAST)
+                    ent:TakeDamageInfo(dmginfo)
+                else
+                    -- Apply damage to props/other entities so they react to the blast
+                    if ent.TakeDamage then
+                        ent:TakeDamage(damage, owner, self)
+                    end
                 end
             end
         end

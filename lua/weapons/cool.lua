@@ -8,6 +8,7 @@ SWEP.Instructions = [[
 ]]
 SWEP.Spawnable = true
 SWEP.AdminOnly = true
+SWEP.Category = "TUNS Weapons"
 
 SWEP.Primary.ClipSize = -1
 SWEP.Primary.DefaultClip = -1

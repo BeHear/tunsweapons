@@ -123,7 +123,7 @@ function SWEP:ShootFireFlame(damage, aimcone)
             fx:SetMagnitude(2)
             fx:SetScale(2.8)
             fx:SetRadius(12)
-            util.Effect("env_fire_trail", fx, true, true)
+            util.Effect("cball_explode", fx, true, true)
 
             if tr.Hit then
                 if IsValid(tr.Entity) then

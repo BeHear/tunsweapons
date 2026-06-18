@@ -53,6 +53,7 @@ end
 -- Улучшенная регистрация урона: используется trace line + hull и двойная проверка, сведение к минимуму пропусков из-за prediction
 function SWEP:PrimaryAttack()
     if not IsFirstTimePredicted() then return end
+    if not IsValid(self.Owner) then return end
 
     self.Owner:SetAnimation(PLAYER_ATTACK1)
     self:SendWeaponAnim(KNIFE_ANIMS.Slash)
@@ -71,6 +72,7 @@ end
 
 function SWEP:SecondaryAttack()
     if not IsFirstTimePredicted() then return end
+    if not IsValid(self.Owner) then return end
 
     self.Owner:SetAnimation(PLAYER_ATTACK1)
     self:SendWeaponAnim(KNIFE_ANIMS.Stab)

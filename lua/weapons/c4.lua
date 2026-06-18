@@ -70,7 +70,11 @@ function SWEP:PrimaryAttack()
     self:SetNextPrimaryFire(CurTime() + (self.Primary.Delay or 0.5))
 
     -- Трассируем вперёд
-    local tr = ply:GetEyeTrace({filter = ply})
+    local tr = util.TraceLine({
+            start = ply:GetShootPos(),
+            endpos = ply:GetShootPos() + ply:GetAimVector() * 100,
+            filter = ply
+        })
     if not CanPlantC4OnTrace(tr) then return end
 
     if IsValid(tr.Entity) and (tr.Entity:IsPlayer() or tr.Entity:IsNPC()) then return end
