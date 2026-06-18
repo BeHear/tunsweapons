@@ -36,6 +36,19 @@
 - Добавлен Glock-17
 - Исправлены баги с перезарядкой
 
+### v1.3.2
+- **gun3 (Mk-Smg 67)**: Исправлена критическая ошибка `BaseClass.Deploy` (Lua error при доставании)
+- **glock.lua / glock17.lua**: Добавлена поддержка прицельной стрельбы с приседа (crouch spread)
+- **train_free.lua**: Исправлен визуальный баг — опечатка "ПОЕЗДИДЕТ" → "ПОЕЗД ЕДЕТ"
+- **cool.lua (Удалятель 2.0)**: Удалены пустые блоки if
+- **gun16 (Mega Stunstick)**: Исправлен стаун — больше не парализует в воздухе (MOVETYPE_NONE)
+- **gun10 (Thanos Snap)**: Исправлен поиск NPC (ents.FindByClass → ents.GetAll)
+- **gun13 (TF-12 Flamethrower)**: Исправлен hold type (physgun → ar2)
+- **gun2 (EagleD)**: Добавлен headshot one-hit для NPC
+- **gun15 (Ba-12 Shotgun)**: Исправлена перезарядка — убран лишний SetNextPrimaryFire
+- **gun17 (Killer)**: Добавлены звук и эффект при убийстве NPC
+- **gun7 (NeSPAS-1337)**: Исправлена анимация перезарядки (fallback при отсутствии Sequence)
+
 ## Примечание
 
 Официальной версии в Steam Workshop **нет**. Репозиторий доступен только на GitHub.

@@ -42,7 +42,7 @@ SWEP.WorldModel = "models/weapons/w_mach_m249para.mdl"
 SWEP.UseHands = true
 
 function SWEP:Initialize()
-    self:SetHoldType("physgun")
+    self:SetHoldType("ar2")
     self.CurrentSpread = self.Primary.Spread
     self.LastFireTime = 0
 end

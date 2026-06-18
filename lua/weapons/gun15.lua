@@ -145,11 +145,9 @@ function SWEP:InsertShell()
         delay = math.max(vm:SequenceDuration(), 0.3)
     end
 
-    self:SetNextPrimaryFire(CurTime() + delay)
-
     timer.Simple(delay, function()
         if not IsValid(self) or not IsValid(owner) or not self.Reloading then
-            self:FinishReload()
+            if IsValid(self) then self:FinishReload() end
             return
         end
 

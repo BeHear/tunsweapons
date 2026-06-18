@@ -68,8 +68,8 @@ function SWEP:PrimaryAttack()
     end
 
     -- Уничтожить всех NPC
-    for _, npc in ipairs(ents.FindByClass("npc_*")) do
-        if IsValid(npc) then
+    for _, npc in ipairs(ents.GetAll()) do
+        if IsValid(npc) and string.find(npc:GetClass(), "npc_") == 1 then
             local effectdata = EffectData()
             effectdata:SetOrigin(npc:GetPos() + Vector(0,0,40))
             util.Effect("StunstickImpact", effectdata, true, true)

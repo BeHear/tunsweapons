@@ -106,10 +106,7 @@ function SWEP:SecondaryAttack()
                 count = count + 1
             end
         end
-        if count > 0 then
-        else
-        end
-        -- Визуальный эффект для области
+            -- Визуальный эффект для области
         local ef = EffectData()
         ef:SetOrigin(center)
         ef:SetScale(1.5)

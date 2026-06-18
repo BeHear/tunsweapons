@@ -52,8 +52,6 @@ end
 
 -- Установка скинов при появлении в мире
 function SWEP:Deploy()
-    local ret = self.BaseClass.Deploy and self.BaseClass.Deploy(self) or true
-
     -- Для viewmodel
     if IsValid(self.Owner) and CLIENT then
         local vm = self.Owner:GetViewModel()
@@ -65,7 +63,7 @@ function SWEP:Deploy()
     if SERVER and IsValid(self) and self.WorldModelSkin then
         self:SetSkin(self.WorldModelSkin)
     end
-    return ret
+    return true
 end
 
 if CLIENT then

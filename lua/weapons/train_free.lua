@@ -156,7 +156,7 @@ if CLIENT then
         local dist = ply:GetPos():Distance(targetPos)
         if dist > TRAIN_RADIUS * 2 then return end
 
-        local warningText = "🚂 ПОЕЗДИДЕТ! 🚂"
+        local warningText = "🚂 ПОЕЗД ЕДЕТ! 🚂"
         sound.Play("buttons/button6.wav", ply:GetPos(), 75, 100, 1, 0)
 
         hook.Add("HUDPaint", "TRAIN_Free_Warning_" .. game.GetMap(), function()

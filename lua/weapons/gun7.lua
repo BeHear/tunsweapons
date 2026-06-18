@@ -196,14 +196,20 @@ function SWEP:Reload()
     self:SetNextPrimaryFire(CurTime() + 0.5)
     self:SetNextSecondaryFire(CurTime() + 0.5)
 
-    -- Начальная анимация перезарядки
     self:SendWeaponAnim(ACT_SHOTGUN_RELOAD_START)
     local vm = self:GetOwner():GetViewModel()
+    local startDuration = 0.5
     if IsValid(vm) then
-        vm:ResetSequence(ACT_SHOTGUN_RELOAD_START)
+        local foundSeq = vm:LookupSequence("reload_start")
+        if foundSeq and foundSeq > 0 then
+            vm:ResetSequence(ACT_SHOTGUN_RELOAD_START)
+            startDuration = vm:SequenceDuration()
+        else
+            startDuration = 0.5
+        end
     end
 
-    timer.Simple(vm:SequenceDuration(), function()
+    timer.Simple(startDuration, function()
         if not IsValid(self) or not IsValid(self:GetOwner()) or not self.Reloading then return end
 
         self:StartShellInsert()

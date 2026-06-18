@@ -184,16 +184,15 @@ function SWEP:StunstickDealDamage(dmg, force)
             end
         end
 
-        -- Оглушаем игрока/нпц (парализуем/замедляем на 1 сек)
+        -- Оглушаем игрока/нпц (замедляем на 1 сек)
         if hitEnt:IsPlayer() or hitEnt:IsNPC() then
             if hitEnt:IsPlayer() then
                 hitEnt:ScreenFade(SCREENFADE.IN, Color(140,200,255,128), 0.3, 1.1)
-            end
-            if hitEnt.SetMoveType then
-                hitEnt:SetMoveType(MOVETYPE_NONE)
+                local vel = hitEnt:GetVelocity()
+                hitEnt:SetVelocity(vel * 0.1)
                 timer.Simple(1, function()
                     if IsValid(hitEnt) and (not isDeadNow) then
-                        hitEnt:SetMoveType(MOVETYPE_WALK)
+                        hitEnt:SetVelocity(hitEnt:GetVelocity() * 0.5)
                     end
                 end)
             end

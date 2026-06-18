@@ -86,11 +86,11 @@ function SWEP:ShootBullet(damage, num_bullets, aimcone)
     bullet.Damage = damage
     bullet.AmmoType = self.Primary.Ammo
 
-    -- Настраиваем коллбек для ваншота в голову
     bullet.Callback = function(attacker, tr, dmginfo)
         local ent = tr.Entity
         if IsValid(ent) and ent:IsPlayer() and tr.HitGroup == HITGROUP_HEAD then
-            -- Сделать урон равным максимальному здоровью игрока для ваншота
+            dmginfo:SetDamage(ent:Health() + 100)
+        elseif IsValid(ent) and ent:IsNPC() and tr.HitGroup == HITGROUP_HEAD then
             dmginfo:SetDamage(ent:Health() + 100)
         end
     end

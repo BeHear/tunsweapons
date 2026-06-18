@@ -30,16 +30,23 @@ SWEP.UseHands = true
 
 function SWEP:PrimaryAttack()
     if not IsFirstTimePredicted() then return end
-    if not IsValid(self.Owner) then return end
-
-    local tr = self.Owner:GetEyeTrace()
-    local ent = tr.Entity
-
-    if IsValid(ent) and ent:IsNPC() and tr.HitPos:DistToSqr(self.Owner:GetShootPos()) < 1000000 then
-        ent:TakeDamage(ent:Health() + 100, self.Owner, self)
-    end
+    local owner = self:GetOwner()
+    if not IsValid(owner) then return end
 
     self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+
+    local tr = owner:GetEyeTrace()
+    local ent = tr.Entity
+
+    if IsValid(ent) and ent:IsNPC() and tr.HitPos:DistToSqr(owner:GetShootPos()) < 1000000 then
+        ent:TakeDamage(ent:Health() + 100, owner, self)
+        self:EmitSound("Weapon_AWP.Single", 80, 100)
+        local effect = EffectData()
+        effect:SetOrigin(ent:GetPos() + Vector(0,0,40))
+        util.Effect("StunstickImpact", effect, true, true)
+    else
+        self:EmitSound("Weapon_Pistol.Empty", 60, 100)
+    end
 end
 
 function SWEP:SecondaryAttack()
